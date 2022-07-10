@@ -20,7 +20,7 @@ export class OidcInteractionMiddleware {
   protected injector: InjectorService;
 
   async use(@Context() context: Context) {
-    const oidcInteraction = this.injector.invoke<OidcInteractionContext>(OidcInteractionContext, context.container);
+    const oidcInteraction = context.invoke<OidcInteractionContext>(OidcInteractionContext);
     const interactionDetails = await oidcInteraction.interactionDetails();
     const {uid, prompt, params, session, grantId} = interactionDetails as any;
 

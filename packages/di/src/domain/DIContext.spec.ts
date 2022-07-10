@@ -61,7 +61,30 @@ describe("DIContext", () => {
       expect(logger.info).toHaveBeenCalled();
     });
   });
+  describe("get()", () => {
+    it("should emit event", async () => {
+      const context = new DIContext({
+        event: {
+          response: PlatformTest.createResponse(),
+          request: PlatformTest.createRequest({
+            url: "/admin"
+          })
+        },
+        id: "id",
+        logger: {
+          info: jest.fn()
+        },
+        maxStackSize: 0,
+        injector: {emit: jest.fn()} as any,
+        ignoreUrlPatterns: ["/admin", /\/admin2/]
+      });
 
+      context.set("test", "test");
+
+      expect(context.get("test")).toEqual("test");
+      expect(context.has("test")).toEqual(true);
+    });
+  });
   describe("emit()", () => {
     it("should emit event", async () => {
       const context = new DIContext({
@@ -83,6 +106,28 @@ describe("DIContext", () => {
       await context.emit("event", "test");
 
       expect(context.injector.emit).toHaveBeenCalledWith("event", "test");
+    });
+  });
+  describe("invoke()", () => {
+    it("should invoke a service", async () => {
+      const context = new DIContext({
+        event: {
+          response: PlatformTest.createResponse(),
+          request: PlatformTest.createRequest({
+            url: "/admin"
+          })
+        },
+        id: "id",
+        logger: {
+          info: jest.fn()
+        },
+        maxStackSize: 0,
+        injector: {invoke: jest.fn().mockReturnValue("service")} as any
+      });
+
+      const result = context.invoke("token");
+
+      expect(result).toEqual("service");
     });
   });
   describe("runInContext()", () => {

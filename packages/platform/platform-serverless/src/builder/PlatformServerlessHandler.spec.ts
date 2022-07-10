@@ -43,7 +43,8 @@ describe("PlatformServerlessHandler", () => {
     const $ctx = new ServerlessContext({
       event: {} as any,
       context: {} as any,
-      endpoint
+      endpoint,
+      injector: DITest.injector
     } as any);
 
     const handler = await service.createHandler(TimeslotsLambdaController, "get");

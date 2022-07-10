@@ -114,11 +114,14 @@ export class PlatformExpress implements PlatformAdapter<Express.Application, Exp
   }
 
   useRouter(): this {
-    const {logger} = this.injector;
-    const app = this.injector.get<PlatformApplication<Express.Application>>(PlatformApplication)!;
+    const {logger, settings} = this.injector;
 
-    logger.debug("Mount app router");
-    app.getApp().use(app.getRouter());
+    if (!settings.get("$$disableRouter")) {
+      const app = this.injector.get<PlatformApplication<Express.Application>>(PlatformApplication)!;
+
+      logger.debug("Mount app router");
+      app.getApp().use(app.getRouter());
+    }
 
     return this;
   }
@@ -137,15 +140,17 @@ export class PlatformExpress implements PlatformAdapter<Express.Application, Exp
     const injector = this.injector;
     const app = this.injector.get<PlatformApplication<Express.Application>>(PlatformApplication)!;
 
-    // NOT FOUND
-    app.use((req: any, res: any, next: any) => {
-      !res.headersSent && injector.get<PlatformExceptions>(PlatformExceptions)?.resourceNotFound(req.$ctx);
-    });
+    if (!injector.settings.get("$$disableContext")) {
+      // NOT FOUND
+      app.use((req: any, res: any, next: any) => {
+        !res.headersSent && injector.get<PlatformExceptions>(PlatformExceptions)?.resourceNotFound(req.$ctx);
+      });
 
-    // EXCEPTION FILTERS
-    app.use((err: any, req: any, res: any, next: any) => {
-      !res.headersSent && injector.get<PlatformExceptions>(PlatformExceptions)?.catch(err, req.$ctx);
-    });
+      // EXCEPTION FILTERS
+      app.use((err: any, req: any, res: any, next: any) => {
+        !res.headersSent && injector.get<PlatformExceptions>(PlatformExceptions)?.catch(err, req.$ctx);
+      });
+    }
   }
 
   useContext(): this {

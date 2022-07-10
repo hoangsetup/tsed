@@ -15,8 +15,6 @@ declare global {
   }
 }
 
-export type HeaderValue = Array<boolean | number | string> | boolean | number | string;
-
 /**
  * Platform Response abstraction layer.
  * @platform

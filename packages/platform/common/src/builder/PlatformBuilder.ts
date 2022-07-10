@@ -198,7 +198,9 @@ export class PlatformBuilder<App = TsED.Application, Router = TsED.Router> {
 
     await this.loadInjector();
 
-    this.#adapter.useContext && this.#adapter.useContext();
+    const disableContext = this.injector.settings.get("$$disableContext");
+
+    !disableContext && this.#adapter.useContext && this.#adapter.useContext();
     this.#adapter.useRouter && this.#adapter.useRouter();
 
     await this.loadRoutes();

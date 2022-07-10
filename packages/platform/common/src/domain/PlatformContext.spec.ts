@@ -1,4 +1,4 @@
-import {PlatformApplication, PlatformTest} from "@tsed/common";
+import {ignoreLog, PlatformApplication, PlatformTest} from "@tsed/common";
 import {nameOf} from "@tsed/core";
 import {PlatformContext} from "./PlatformContext";
 
@@ -42,7 +42,6 @@ describe("PlatformContext", () => {
     const logger = {
       info: jest.fn()
     };
-
     const context = new PlatformContext({
       id: "id",
       event: {
@@ -54,7 +53,7 @@ describe("PlatformContext", () => {
       logger,
       injector: PlatformTest.injector,
       maxStackSize: 0,
-      ignoreUrlPatterns: ["/admin", /\/admin2/]
+      ignoreLog: ignoreLog(["/admin", /\/admin2/])
     });
 
     context.logger.info("test");

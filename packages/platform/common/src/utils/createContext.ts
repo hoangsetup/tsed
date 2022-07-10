@@ -26,12 +26,15 @@ export function buildIgnoreLog(ignoreUrlPatterns: any[] | undefined) {
  * @ignore
  */
 export function createContext(injector: InjectorService) {
+  const disableEvents = injector.settings.get("$$disableEvents");
+  const disableLoggerContext = injector.settings.get("$$disableLoggerContext");
   const ResponseKlass = injector.getProvider(PlatformResponse)?.useClass;
   const RequestKlass = injector.getProvider(PlatformRequest)?.useClass;
   const {reqIdBuilder = defaultReqIdBuilder, ...loggerOptions} = injector.settings.logger;
 
   const opts = {
     ...loggerOptions,
+    disableLoggerContext,
     logger: injector.logger,
     injector,
     ResponseKlass,
@@ -49,12 +52,14 @@ export function createContext(injector: InjectorService) {
 
     ignoreLog && ctx.logger.alterIgnoreLog((ignore, data) => ignoreLog(ignore, data, ctx.url));
 
-    ctx.response.onEnd(async () => {
-      await ctx.emit("$onResponse", ctx);
-      await ctx.destroy();
-    });
+    if (!disableEvents) {
+      ctx.response.onEnd(async () => {
+        await ctx.emit("$onResponse", ctx);
+        await ctx.destroy();
+      });
 
-    await ctx.emit("$onRequest", ctx);
+      await ctx.emit("$onRequest", ctx);
+    }
 
     return ctx;
   };
