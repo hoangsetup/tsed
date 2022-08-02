@@ -17,7 +17,6 @@ app.use(async (req, res, next) => {
       request: req,
       response: res
     },
-    injector,
     id: v4()
   });
 

@@ -88,7 +88,7 @@ export class PlatformParams {
     }
 
     return async (scope) => {
-      const [instance, args] = await Promise.all([scope.$ctx.invoke<any>(token), getArguments(scope)]);
+      const [instance, args] = await Promise.all([this.injector.invoke<any>(token, scope.$ctx.container), getArguments(scope)]);
 
       return instance[propertyKey].call(instance, ...args, scope.$ctx);
     };

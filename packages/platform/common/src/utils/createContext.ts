@@ -2,6 +2,7 @@ import {InjectorService} from "@tsed/di";
 import {v4} from "uuid";
 import {PlatformContext} from "../domain/PlatformContext";
 import {IncomingEvent} from "../interfaces/IncomingEvent";
+import {PlatformApplication} from "../services/PlatformApplication";
 import {PlatformRequest} from "../services/PlatformRequest";
 import {PlatformResponse} from "../services/PlatformResponse";
 
@@ -30,13 +31,14 @@ export function createContext(injector: InjectorService) {
   const disableLoggerContext = injector.settings.get("$$disableLoggerContext");
   const ResponseKlass = injector.getProvider(PlatformResponse)?.useClass;
   const RequestKlass = injector.getProvider(PlatformRequest)?.useClass;
+  const app = injector.get<PlatformApplication>(PlatformApplication);
   const {reqIdBuilder = defaultReqIdBuilder, ...loggerOptions} = injector.settings.logger;
 
   const opts = {
     ...loggerOptions,
     disableLoggerContext,
     logger: injector.logger,
-    injector,
+    app,
     ResponseKlass,
     RequestKlass
   };

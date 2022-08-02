@@ -2,7 +2,7 @@ import {ContextMethods, DIContext, DIContextOptions} from "@tsed/di";
 import {EndpointMetadata} from "@tsed/schema";
 import {IncomingMessage, ServerResponse} from "http";
 import {IncomingEvent} from "../interfaces/IncomingEvent";
-import {PlatformApplication} from "../services/PlatformApplication";
+import type {PlatformApplication} from "../services/PlatformApplication";
 import {PlatformRequest} from "../services/PlatformRequest";
 import {PlatformResponse} from "../services/PlatformResponse";
 
@@ -15,6 +15,7 @@ declare global {
 export interface PlatformContextOptions extends DIContextOptions {
   event: IncomingEvent;
   ignoreUrlPatterns?: any[];
+  app?: PlatformApplication;
   endpoint?: EndpointMetadata;
 }
 
@@ -77,7 +78,7 @@ export class PlatformContext<PReq extends PlatformRequest = PlatformRequest, PRe
   }
 
   get app() {
-    return this.injector.get<PlatformApplication>(PlatformApplication)!;
+    return this.opts.app;
   }
 
   async destroy() {

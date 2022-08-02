@@ -7,7 +7,6 @@ import {LocalsContainer} from "./LocalsContainer";
 export interface ContextMethods extends Map<any, any> {
   readonly id: string;
   readonly logger: ContextLogger;
-  readonly injector: InjectorService;
   readonly container: LocalsContainer;
   readonly env: Env;
 
@@ -16,7 +15,6 @@ export interface ContextMethods extends Map<any, any> {
 
 export interface DIContextOptions extends Omit<ContextLoggerOptions, "dateStart"> {
   id: string;
-  injector: InjectorService;
   logger: any;
 }
 
@@ -70,10 +68,6 @@ export class DIContext extends Map<any, any> implements ContextMethods {
 
   get dateStart() {
     return this.logger.dateStart;
-  }
-
-  get injector(): InjectorService {
-    return this.opts.injector!;
   }
 
   get env() {
